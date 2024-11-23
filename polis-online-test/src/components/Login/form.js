@@ -29,8 +29,6 @@ const LoginForm = () => {
       // const res = await axios.post(apiUrl + '/login', values);
       login(values.email, values.password);
       navigate("/my-account"); 
-  
-      resetForm(); // Reset the form if submission is successful
     } catch (error) {
       // console.error('Error submitting form:', error);
   
