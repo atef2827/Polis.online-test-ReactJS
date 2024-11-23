@@ -153,7 +153,7 @@ const SignupForm = () => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <TextField
-                  label="фамилия"
+                  label="Фамилия"
                   name="lname"
                   value={values.lname}
                   onChange={handleChange}
