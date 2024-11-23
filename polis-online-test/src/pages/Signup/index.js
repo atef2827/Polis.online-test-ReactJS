@@ -2,7 +2,6 @@ import React from 'react';
 import { Container, Typography, Box } from '@mui/material';
 import SignupForm from '../../components/Signup/form';
 import Grid from '@mui/material/Grid';
-import { Link } from 'react-router-dom';
 
 const Signup = () => {
   return (
