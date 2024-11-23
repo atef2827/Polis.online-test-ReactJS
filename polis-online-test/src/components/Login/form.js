@@ -28,14 +28,6 @@ const LoginForm = () => {
       // Send form data to the API
       // const res = await axios.post(apiUrl + '/login', values);
       login(values.email, values.password);
-      Swal.fire({
-        title: 'Успешно!',
-        text: 'Успешный вход!',
-        icon: 'success',
-        // confirmButtonText: 'Ладно',
-        showConfirmButton: false,
-        timer: 1500
-      });
       navigate("/my-account"); 
   
       resetForm(); // Reset the form if submission is successful

@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { setAuth, clearAuth } from "../slices/authSlice";
 import { useCookies } from "react-cookie";
 import axios from "axios";
+import Swal from 'sweetalert2';
 
 // Create Context
 const AuthContext = createContext();
@@ -20,13 +21,44 @@ export const AuthProvider = ({ children }) => {
         password,
       });
 
-      const { token, user } = response.data;
-      let plainTextToken = token.plainTextToken;
-      // Save token in cookies
-      setCookie("authToken", plainTextToken, { path: "/", httpOnly: false });
+      if(response.data.status === 'success'){
+        const { token, user } = response.data;
+        let plainTextToken = token.plainTextToken;
+        // Save token in cookies
+        setCookie("authToken", plainTextToken, { path: "/", httpOnly: false });
+  
+        // Update Redux state
+        dispatch(setAuth({ user, plainTextToken }));
 
-      // Update Redux state
-      dispatch(setAuth({ user, plainTextToken }));
+        Swal.fire({
+          title: 'Успешно!',
+          text: 'Успешный вход!',
+          icon: 'success',
+          // confirmButtonText: 'Ладно',
+          showConfirmButton: false,
+          timer: 1500
+        });
+      }else{
+        let msg = "Ошибка.";
+          if(response.data?.msg && typeof response.data.errors !== "object"){
+            msg = response.data.msg;
+          }else{
+            if(typeof response.data.errors === "object"){
+              msg = Object.values(response.data.errors)
+              .flat()
+              .join('\n');
+            }
+            if(!msg && response.data?.msg){
+              msg = response.data?.msg;
+            }
+          }
+        Swal.fire({
+          title: 'Ошибка проверки данных!',
+          text: msg,
+          icon: 'error',
+          confirmButtonText: 'Попробовать снова',
+        });
+      }
     } catch (error) {
       console.error("Login failed:", error.response?.data || error.message);
       throw error; // Rethrow error for further handling
@@ -52,10 +84,14 @@ export const AuthProvider = ({ children }) => {
             Authorization: `Bearer ${token}`,
           },
         });
-
-        // Update Redux state with user info
-        const user = response.data.user;
-        dispatch(setAuth({ user, token }));
+        if(response.data.status === 'success'){
+          // Update Redux state with user info
+          const user = response.data.user;
+          dispatch(setAuth({ user, token }));
+        }else{
+          removeCookie("authToken", { path: "/" });
+          dispatch(clearAuth());
+        }
       } catch (error) {
         console.error("Failed to fetch user from token:", error.message);
         // Remove invalid token

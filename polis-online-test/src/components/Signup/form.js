@@ -45,16 +45,38 @@ const SignupForm = () => {
       const res = await axios.post(apiUrl + '/signup', values);
       // console.log('Form Submitted Successfully:', res.data);
   
-      // Show success message
-      Swal.fire({
-        title: 'Успешно!',
-        text: res.data.msg,
-        icon: 'success',
-        confirmButtonText: 'Ладно',
-      });
-      navigate("/login");
-  
-      resetForm(); // Reset the form if submission is successful
+      if(res.data.status === "success"){
+        // Show success message
+        Swal.fire({
+          title: 'Успешно!',
+          text: res.data.msg,
+          icon: 'success',
+          confirmButtonText: 'Ладно',
+        });
+        navigate("/login"); 
+        resetForm(); // Reset the form if submission is successful
+      }else{
+        let msg = "Ошибка.";
+
+        if(res.data?.msg && typeof res.data.errors !== "object"){
+          msg = res.data.msg;
+        }else{
+          if(typeof res.data.errors === "object"){
+            msg = Object.values(res.data.errors)
+            .flat()
+            .join('\n');
+          }
+          if(!msg && res.data?.msg){
+            msg = res.data?.msg;
+          }
+        }
+        Swal.fire({
+          title: 'Ошибка проверки данных!',
+          text: msg,
+          icon: 'error',
+          confirmButtonText: 'Попробовать снова',
+        });
+      }
     } catch (error) {
       console.error('Error submitting form:', error);
   
