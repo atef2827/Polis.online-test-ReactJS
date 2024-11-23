@@ -7,6 +7,8 @@ import Swal from 'sweetalert2';
 import Grid from '@mui/material/Grid';
 
 const SignupForm = () => {
+  const apiUrl = process.env.REACT_APP_API_URL;
+
   const initialValues = {
     fname: '',
     lname: '',
@@ -37,17 +39,58 @@ const SignupForm = () => {
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      const response = await axios.post('https://jsonplaceholder.typicode.com/posts', values);
-      console.log('Form Submitted Successfully:', response.data);
-      Swal.fire({ title: 'успешно!', text: 'Форма успешно отправлена.', icon: 'success', confirmButtonText: 'ладно', });
-      resetForm();
+      // Send form data to the API
+      const res = await axios.post(apiUrl + '/signup', values);
+      // console.log('Form Submitted Successfully:', res.data);
+  
+      // Show success message
+      Swal.fire({
+        title: 'Успешно!',
+        text: res.data.msg,
+        icon: 'success',
+        confirmButtonText: 'Ладно',
+      });
+  
+      resetForm(); // Reset the form if submission is successful
     } catch (error) {
-      Swal.fire({ title: 'неуспешно (((', text: 'Форма неуспешно отправлена.', icon: 'error', confirmButtonText: 'опять', });
       console.error('Error submitting form:', error);
+  
+      // Handle validation errors
+      if (error.response && error.response.status === 422) {
+        const validationErrors = error.response.data.errors; // Get validation errors from response
+        const errorMessages = Object.values(validationErrors)
+          .flat()
+          .join('\n'); // Combine all error messages into a single string
+  
+        Swal.fire({
+          title: 'Ошибка проверки данных!',
+          text: errorMessages, // Display all validation errors
+          icon: 'error',
+          confirmButtonText: 'Попробовать снова',
+        });
+      } else {
+        // Handle other server or network errors
+        if(error.response.data?.msg){
+          Swal.fire({
+            title: 'Ошибка!',
+            text: error.response.data?.msg,
+            icon: 'error',
+            confirmButtonText: 'Попробовать снова',
+          });
+        }else{
+          Swal.fire({
+            title: 'Ошибка!',
+            text: 'Произошла ошибка при обработке вашего запроса. Пожалуйста, попробуйте еще раз.',
+            icon: 'error',
+            confirmButtonText: 'Попробовать снова',
+          });
+        }
+      }
     } finally {
-      setSubmitting(false);
+      setSubmitting(false); // Stop the form from being in the submitting state
     }
   };
+  
 
   return (
     <Formik
