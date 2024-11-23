@@ -1,16 +1,18 @@
 import React from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
 import { TextField, Button, Box } from '@mui/material';
 import Swal from 'sweetalert2';
+import { useAuth } from 'hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const initialValues = {
-    email: '',
-    password: ''
+    email: 'test@test.com',
+    password: 'Password123!'
   };
 
   const validationSchema = Yup.object({
@@ -24,15 +26,17 @@ const LoginForm = () => {
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
       // Send form data to the API
-      const res = await axios.post(apiUrl + '/login', values);
-  
-      // Show success message
+      // const res = await axios.post(apiUrl + '/login', values);
+      login(values.email, values.password);
       Swal.fire({
         title: 'Успешно!',
-        text: res.data.msg,
+        text: 'Успешный вход!',
         icon: 'success',
-        confirmButtonText: 'Ладно',
+        // confirmButtonText: 'Ладно',
+        showConfirmButton: false,
+        timer: 1500
       });
+      navigate("/my-account"); 
   
       resetForm(); // Reset the form if submission is successful
     } catch (error) {

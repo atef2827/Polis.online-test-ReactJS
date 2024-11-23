@@ -5,9 +5,11 @@ import axios from 'axios';
 import { TextField, Button, Box, RadioGroup, FormControl, FormControlLabel, Radio, FormLabel } from '@mui/material';
 import Swal from 'sweetalert2';
 import Grid from '@mui/material/Grid';
+import { useNavigate } from 'react-router-dom';
 
 const SignupForm = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
+  const navigate = useNavigate();
 
   const initialValues = {
     fname: '',
@@ -50,6 +52,7 @@ const SignupForm = () => {
         icon: 'success',
         confirmButtonText: 'Ладно',
       });
+      navigate("/login");
   
       resetForm(); // Reset the form if submission is successful
     } catch (error) {
