@@ -11,8 +11,8 @@ const LoginForm = () => {
   const navigate = useNavigate();
 
   const initialValues = {
-    email: 'test@test.com',
-    password: 'Password123!'
+    email: '',
+    password: ''
   };
 
   const validationSchema = Yup.object({
