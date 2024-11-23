@@ -6,7 +6,7 @@ const Login = () => {
   return (
     <Container maxWidth="lg">
       <Box my={4}>
-        <Typography variant='h3' align='center'>Авторизоваться</Typography>
+        <Typography variant='h3' align='center'>Войти</Typography>
         <LoginForm />
       </Box>
     </Container>

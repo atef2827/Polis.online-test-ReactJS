@@ -128,7 +128,7 @@ const LoginForm = () => {
               disabled={isSubmitting}
               fullWidth
             >
-              {isSubmitting ? 'Отправка...' : 'Авторизоваться'}
+              {isSubmitting ? 'Отправка...' : 'Войти'}
             </Button>
           </Box>
         </Form>
